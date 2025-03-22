@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2025 at 04:39 PM
+-- Generation Time: Mar 22, 2025 at 11:52 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -61,13 +61,6 @@ CREATE TABLE `admins` (
   `is_super` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `admins`
---
-
-INSERT INTO `admins` (`id`, `user_id`, `is_super`, `created_at`) VALUES
-(1, 17, 0, '2025-03-22 15:30:14');
 
 -- --------------------------------------------------------
 
@@ -169,6 +162,21 @@ CREATE TABLE `orphan_activities` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `orphan_reports`
+--
+
+CREATE TABLE `orphan_reports` (
+  `id` int(11) NOT NULL,
+  `orphan_id` int(11) NOT NULL,
+  `report_type` enum('Health','Education','Progress','Other') NOT NULL,
+  `description` text DEFAULT NULL,
+  `photo_url` varchar(255) DEFAULT NULL,
+  `report_date` date NOT NULL DEFAULT curdate()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rooms`
 --
 
@@ -200,16 +208,15 @@ CREATE TABLE `sponsors` (
   `id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `orphanage_id` int(11) DEFAULT NULL,
-  `total_sponsored` int(11) DEFAULT 0,
-  `total_amount` decimal(10,2) DEFAULT 0.00
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sponsors`
 --
 
-INSERT INTO `sponsors` (`id`, `user_id`, `orphanage_id`, `total_sponsored`, `total_amount`) VALUES
-(1, 13, NULL, 0, 0.00);
+INSERT INTO `sponsors` (`id`, `user_id`, `orphanage_id`, `created_at`) VALUES
+(1, 13, NULL, '2025-03-22 22:51:23');
 
 -- --------------------------------------------------------
 
@@ -224,8 +231,33 @@ CREATE TABLE `sponsorships` (
   `orphanage_id` int(11) DEFAULT NULL,
   `monthly_amount` decimal(10,2) NOT NULL,
   `start_date` date NOT NULL,
-  `status` enum('active','paused','cancelled') DEFAULT 'active'
+  `status` enum('active','paused','cancelled') DEFAULT 'active',
+  `sponsorship_type_id` int(11) DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `notes` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sponsorship_types`
+--
+
+CREATE TABLE `sponsorship_types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sponsorship_types`
+--
+
+INSERT INTO `sponsorship_types` (`id`, `name`, `description`) VALUES
+(1, 'Full Sponsorship', 'Covers all basic needs of the orphan'),
+(2, 'Education', 'Covers tuition fees, school supplies, and education needs'),
+(3, 'Health', 'Covers medical check-ups and treatments'),
+(4, 'Monthly Support', 'General monthly contribution to the orphan');
 
 -- --------------------------------------------------------
 
@@ -249,15 +281,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `phone_number`, `email`, `password`, `role`, `orphanage_id`, `created_at`) VALUES
-(2, 'Amani Odeh', '0591234567', 'amani@example.com', '$2b$10$8SdCibvumYquwDeN3ASrdOOnuIcs49mtDyYBbDKY.tWcFHI6Be0BG', 'donor', 1, '2025-03-22 06:12:29'),
 (3, 'Khaled Sponsor', '0598888888', 'khaled@sponsor.com', '$2b$10$ZanH9WbJkLkvjvQkQVfXIO9/ZO5w6DwjMuxWOnU9/qWhZn4pp3E0i', 'sponsor', NULL, '2025-03-22 06:18:08'),
 (5, 'Hana Volunteer', '0597777777', 'hana.vol@example.com', '$2b$10$AIVXpq0d8N97rpPoedV9NOWOvJVV6nmsuHaJEeKDEsm8jrg8EPwnW', 'volunteer', NULL, '2025-03-22 06:28:02'),
 (11, 'Yousef Orphan', '0599999999', 'yousef.orphan123@example.com', '$2b$10$k1mXI40KXC.BD4hb5vSwiu0m2G9VHoAQywRdlLnExXwER22pLNsN6', 'orphan', 1, '2025-03-22 12:24:28'),
 (12, 'Ahmed Donor', '0599123456', 'ahmed.donor@example.com', '$2b$10$qWXYaZoygAmUxb5/QQayduNRHT0QNx0ZUneqlXLmClnCBwO6cKqR.', 'donor', NULL, '2025-03-22 12:26:57'),
 (13, 'Mona Sponsor', '0599234567', 'mona.sponsor@example.com', '$2b$10$pbV/gZE9ePseCLNN13CSU.bsBibRyB8xWoH6V0FuhhhxyyW.GtzBW', 'sponsor', NULL, '2025-03-22 12:27:11'),
 (15, 'Yousef Orphan', '0599456789', 'yousef.orphan@example.com', '$2b$10$siDekQ/qv6cpzcLZSEtBTeOXqsnVYA7FMyrNeDqZE1nKTwy.sydiC', 'orphan', 1, '2025-03-22 12:28:33'),
-(16, 'Ali Volunteer', '0599345678', 'ali.vol@example.com', '$2b$10$/3Xoa4meCPChU0YlUdSv3OiETbzn1LaisxaqVvImnIcTu2W0xjCeO', 'volunteer', NULL, '2025-03-22 12:31:31'),
-(17, 'Admin One', '0599000000', 'admin1@example.com', '$2b$10$t3aJ8OYHXSBFgpFi9npK.e34gLjdmJ8rU6opqO/gUgRSIPsd0v0.G', 'admin', NULL, '2025-03-22 15:30:14');
+(16, 'Ali Volunteer', '0599345678', 'ali.vol@example.com', '$2b$10$/3Xoa4meCPChU0YlUdSv3OiETbzn1LaisxaqVvImnIcTu2W0xjCeO', 'volunteer', NULL, '2025-03-22 12:31:31');
 
 -- --------------------------------------------------------
 
@@ -378,6 +408,13 @@ ALTER TABLE `orphan_activities`
   ADD KEY `schedule_id` (`schedule_id`);
 
 --
+-- Indexes for table `orphan_reports`
+--
+ALTER TABLE `orphan_reports`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `orphan_id` (`orphan_id`);
+
+--
 -- Indexes for table `rooms`
 --
 ALTER TABLE `rooms`
@@ -399,7 +436,14 @@ ALTER TABLE `sponsorships`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sponsor_id` (`sponsor_id`),
   ADD KEY `orphan_id` (`orphan_id`),
-  ADD KEY `orphanage_id` (`orphanage_id`);
+  ADD KEY `orphanage_id` (`orphanage_id`),
+  ADD KEY `fk_sponsorship_type` (`sponsorship_type_id`);
+
+--
+-- Indexes for table `sponsorship_types`
+--
+ALTER TABLE `sponsorship_types`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -485,6 +529,12 @@ ALTER TABLE `orphan_activities`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `orphan_reports`
+--
+ALTER TABLE `orphan_reports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
@@ -501,6 +551,12 @@ ALTER TABLE `sponsors`
 --
 ALTER TABLE `sponsorships`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sponsorship_types`
+--
+ALTER TABLE `sponsorship_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -580,6 +636,12 @@ ALTER TABLE `orphan_activities`
   ADD CONSTRAINT `orphan_activities_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `activity_schedule` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `orphan_reports`
+--
+ALTER TABLE `orphan_reports`
+  ADD CONSTRAINT `orphan_reports_ibfk_1` FOREIGN KEY (`orphan_id`) REFERENCES `orphans` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `rooms`
 --
 ALTER TABLE `rooms`
@@ -596,6 +658,7 @@ ALTER TABLE `sponsors`
 -- Constraints for table `sponsorships`
 --
 ALTER TABLE `sponsorships`
+  ADD CONSTRAINT `fk_sponsorship_type` FOREIGN KEY (`sponsorship_type_id`) REFERENCES `sponsorship_types` (`id`),
   ADD CONSTRAINT `sponsorships_ibfk_1` FOREIGN KEY (`sponsor_id`) REFERENCES `sponsors` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `sponsorships_ibfk_2` FOREIGN KEY (`orphan_id`) REFERENCES `orphans` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sponsorships_ibfk_3` FOREIGN KEY (`orphanage_id`) REFERENCES `orphanages` (`id`) ON DELETE CASCADE;
