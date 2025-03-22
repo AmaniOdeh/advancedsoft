@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2025 at 07:28 PM
+-- Generation Time: Mar 22, 2025 at 02:53 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -82,6 +82,13 @@ CREATE TABLE `donors` (
   `total_amount` decimal(10,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `donors`
+--
+
+INSERT INTO `donors` (`id`, `user_id`, `orphanage_id`, `total_donations`, `total_amount`) VALUES
+(1, 12, NULL, 0, 0.00);
+
 -- --------------------------------------------------------
 
 --
@@ -95,6 +102,13 @@ CREATE TABLE `orphanages` (
   `contact_phone` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orphanages`
+--
+
+INSERT INTO `orphanages` (`id`, `name`, `address`, `contact_phone`, `created_at`) VALUES
+(1, 'بيت الأمل', 'نابلس - شارع الجامعة', '0591234567', '2025-03-22 06:10:48');
 
 -- --------------------------------------------------------
 
@@ -111,6 +125,14 @@ CREATE TABLE `orphans` (
   `room_id` int(11) DEFAULT NULL,
   `orphanage_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orphans`
+--
+
+INSERT INTO `orphans` (`id`, `user_id`, `age`, `education_status`, `health_condition`, `room_id`, `orphanage_id`) VALUES
+(2, 11, 12, 'متوسط', 'جيد', 1, 1),
+(3, 15, 11, 'Primary', 'Good', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -137,6 +159,17 @@ CREATE TABLE `rooms` (
   `orphanage_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`id`, `name`, `description`, `orphanage_id`) VALUES
+(1, 'غرفة 1', 'غرفة للأطفال من عمر 2 إلى 3 سنوات', 1),
+(2, 'غرفة 2', 'غرفة للأطفال من عمر 4 إلى 5 سنوات', 1),
+(3, 'غرفة 3', 'غرفة للأطفال من عمر 6 إلى 8 سنوات', 1),
+(4, 'غرفة 4', 'غرفة للأطفال من عمر 9 إلى 11 سنة', 1),
+(5, 'غرفة 5', 'غرفة للأطفال من عمر 12 إلى 14 سنة', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -150,6 +183,13 @@ CREATE TABLE `sponsors` (
   `total_sponsored` int(11) DEFAULT 0,
   `total_amount` decimal(10,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sponsors`
+--
+
+INSERT INTO `sponsors` (`id`, `user_id`, `orphanage_id`, `total_sponsored`, `total_amount`) VALUES
+(1, 13, NULL, 0, 0.00);
 
 -- --------------------------------------------------------
 
@@ -184,6 +224,39 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `phone_number`, `email`, `password`, `role`, `orphanage_id`, `created_at`) VALUES
+(2, 'Amani Odeh', '0591234567', 'amani@example.com', '$2b$10$8SdCibvumYquwDeN3ASrdOOnuIcs49mtDyYBbDKY.tWcFHI6Be0BG', 'donor', 1, '2025-03-22 06:12:29'),
+(3, 'Khaled Sponsor', '0598888888', 'khaled@sponsor.com', '$2b$10$ZanH9WbJkLkvjvQkQVfXIO9/ZO5w6DwjMuxWOnU9/qWhZn4pp3E0i', 'sponsor', NULL, '2025-03-22 06:18:08'),
+(5, 'Hana Volunteer', '0597777777', 'hana.vol@example.com', '$2b$10$AIVXpq0d8N97rpPoedV9NOWOvJVV6nmsuHaJEeKDEsm8jrg8EPwnW', 'volunteer', NULL, '2025-03-22 06:28:02'),
+(11, 'Yousef Orphan', '0599999999', 'yousef.orphan123@example.com', '$2b$10$k1mXI40KXC.BD4hb5vSwiu0m2G9VHoAQywRdlLnExXwER22pLNsN6', 'orphan', 1, '2025-03-22 12:24:28'),
+(12, 'Ahmed Donor', '0599123456', 'ahmed.donor@example.com', '$2b$10$qWXYaZoygAmUxb5/QQayduNRHT0QNx0ZUneqlXLmClnCBwO6cKqR.', 'donor', NULL, '2025-03-22 12:26:57'),
+(13, 'Mona Sponsor', '0599234567', 'mona.sponsor@example.com', '$2b$10$pbV/gZE9ePseCLNN13CSU.bsBibRyB8xWoH6V0FuhhhxyyW.GtzBW', 'sponsor', NULL, '2025-03-22 12:27:11'),
+(15, 'Yousef Orphan', '0599456789', 'yousef.orphan@example.com', '$2b$10$siDekQ/qv6cpzcLZSEtBTeOXqsnVYA7FMyrNeDqZE1nKTwy.sydiC', 'orphan', 1, '2025-03-22 12:28:33'),
+(16, 'Ali Volunteer', '0599345678', 'ali.vol@example.com', '$2b$10$/3Xoa4meCPChU0YlUdSv3OiETbzn1LaisxaqVvImnIcTu2W0xjCeO', 'volunteer', NULL, '2025-03-22 12:31:31');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `volunteers`
+--
+
+CREATE TABLE `volunteers` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `volunteers`
+--
+
+INSERT INTO `volunteers` (`id`, `user_id`, `type_id`) VALUES
+(2, 16, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -196,6 +269,26 @@ CREATE TABLE `volunteer_activities` (
   `orphanage_id` int(11) DEFAULT NULL,
   `schedule_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `volunteer_types`
+--
+
+CREATE TABLE `volunteer_types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `volunteer_types`
+--
+
+INSERT INTO `volunteer_types` (`id`, `name`) VALUES
+(1, 'Teaching'),
+(2, 'Entertainment'),
+(3, 'Medical');
 
 --
 -- Indexes for dumped tables
@@ -289,6 +382,14 @@ ALTER TABLE `users`
   ADD KEY `orphanage_id` (`orphanage_id`);
 
 --
+-- Indexes for table `volunteers`
+--
+ALTER TABLE `volunteers`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `type_id` (`type_id`);
+
+--
 -- Indexes for table `volunteer_activities`
 --
 ALTER TABLE `volunteer_activities`
@@ -296,6 +397,12 @@ ALTER TABLE `volunteer_activities`
   ADD KEY `volunteer_id` (`volunteer_id`),
   ADD KEY `orphanage_id` (`orphanage_id`),
   ADD KEY `schedule_id` (`schedule_id`);
+
+--
+-- Indexes for table `volunteer_types`
+--
+ALTER TABLE `volunteer_types`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -323,19 +430,19 @@ ALTER TABLE `donations`
 -- AUTO_INCREMENT for table `donors`
 --
 ALTER TABLE `donors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `orphanages`
 --
 ALTER TABLE `orphanages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `orphans`
 --
 ALTER TABLE `orphans`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `orphan_activities`
@@ -347,13 +454,13 @@ ALTER TABLE `orphan_activities`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sponsors`
 --
 ALTER TABLE `sponsors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sponsorships`
@@ -365,13 +472,25 @@ ALTER TABLE `sponsorships`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `volunteers`
+--
+ALTER TABLE `volunteers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `volunteer_activities`
 --
 ALTER TABLE `volunteer_activities`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `volunteer_types`
+--
+ALTER TABLE `volunteer_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -446,6 +565,13 @@ ALTER TABLE `sponsorships`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`orphanage_id`) REFERENCES `orphanages` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `volunteers`
+--
+ALTER TABLE `volunteers`
+  ADD CONSTRAINT `volunteers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `volunteers_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `volunteer_types` (`id`);
 
 --
 -- Constraints for table `volunteer_activities`
