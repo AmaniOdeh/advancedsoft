@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2025 at 02:53 PM
+-- Generation Time: Mar 22, 2025 at 04:39 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -48,6 +48,26 @@ CREATE TABLE `activity_schedule` (
   `end_time` time NOT NULL,
   `location` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `is_super` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`id`, `user_id`, `is_super`, `created_at`) VALUES
+(1, 17, 0, '2025-03-22 15:30:14');
 
 -- --------------------------------------------------------
 
@@ -236,7 +256,8 @@ INSERT INTO `users` (`id`, `name`, `phone_number`, `email`, `password`, `role`, 
 (12, 'Ahmed Donor', '0599123456', 'ahmed.donor@example.com', '$2b$10$qWXYaZoygAmUxb5/QQayduNRHT0QNx0ZUneqlXLmClnCBwO6cKqR.', 'donor', NULL, '2025-03-22 12:26:57'),
 (13, 'Mona Sponsor', '0599234567', 'mona.sponsor@example.com', '$2b$10$pbV/gZE9ePseCLNN13CSU.bsBibRyB8xWoH6V0FuhhhxyyW.GtzBW', 'sponsor', NULL, '2025-03-22 12:27:11'),
 (15, 'Yousef Orphan', '0599456789', 'yousef.orphan@example.com', '$2b$10$siDekQ/qv6cpzcLZSEtBTeOXqsnVYA7FMyrNeDqZE1nKTwy.sydiC', 'orphan', 1, '2025-03-22 12:28:33'),
-(16, 'Ali Volunteer', '0599345678', 'ali.vol@example.com', '$2b$10$/3Xoa4meCPChU0YlUdSv3OiETbzn1LaisxaqVvImnIcTu2W0xjCeO', 'volunteer', NULL, '2025-03-22 12:31:31');
+(16, 'Ali Volunteer', '0599345678', 'ali.vol@example.com', '$2b$10$/3Xoa4meCPChU0YlUdSv3OiETbzn1LaisxaqVvImnIcTu2W0xjCeO', 'volunteer', NULL, '2025-03-22 12:31:31'),
+(17, 'Admin One', '0599000000', 'admin1@example.com', '$2b$10$t3aJ8OYHXSBFgpFi9npK.e34gLjdmJ8rU6opqO/gUgRSIPsd0v0.G', 'admin', NULL, '2025-03-22 15:30:14');
 
 -- --------------------------------------------------------
 
@@ -307,6 +328,13 @@ ALTER TABLE `activities`
 ALTER TABLE `activity_schedule`
   ADD PRIMARY KEY (`id`),
   ADD KEY `activity_id` (`activity_id`);
+
+--
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `donations`
@@ -421,6 +449,12 @@ ALTER TABLE `activity_schedule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `donations`
 --
 ALTER TABLE `donations`
@@ -472,7 +506,7 @@ ALTER TABLE `sponsorships`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `volunteers`
@@ -507,6 +541,12 @@ ALTER TABLE `activities`
 --
 ALTER TABLE `activity_schedule`
   ADD CONSTRAINT `activity_schedule_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `admins`
+--
+ALTER TABLE `admins`
+  ADD CONSTRAINT `admins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `donations`
