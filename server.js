@@ -9,6 +9,7 @@ const sponsorshipRoutes = require("./routes/sponsorship.routes");
 const reportsRoutes = require("./adminroutes/orphanReports.routes");
 const cron = require("node-cron");
 const sponsorAdminRoutes = require("./adminroutes/sponsorAdmin.routes");
+const donationRoutes = require("./routes/donation.routes");
 
 const sendExpiryNotifications = require("./routes/notify");
 cron.schedule("0 9 * * *", () => {
@@ -26,6 +27,7 @@ app.use("/api/sponsorship", sponsorshipRoutes);
 app.use("/api/reports", reportsRoutes);
 sendExpiryNotifications(); // جربيها يدويًا
 app.use("/api/admin/sponsorships", sponsorAdminRoutes);
+app.use("/api/donations", donationRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

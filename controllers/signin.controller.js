@@ -54,6 +54,16 @@ const signin = async (req, res) => {
 
     // ✅ باقي الأدوار
     } else {
+      // ✨ إذا المستخدم متبرع، نضيفه إلى جدول donors إذا مش موجود
+      if (user.role === "sponsor") {
+        db.query("SELECT * FROM sponsors WHERE user_id = ?", [user.id], (err, sponsorResults) => {
+          if (sponsorResults.length === 0) {
+            db.query("INSERT INTO sponsors (user_id) VALUES (?)", [user.id]);
+          }
+        });
+      }
+      
+
       const token = jwt.sign(
         {
           id: user.id,
