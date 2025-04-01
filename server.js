@@ -8,6 +8,8 @@ const profileRoutes = require("./routes/profile.routes");
 const sponsorshipRoutes = require("./routes/sponsorship.routes");
 const reportsRoutes = require("./adminroutes/orphanReports.routes");
 const cron = require("node-cron");
+const sponsorAdminRoutes = require("./adminroutes/sponsorAdmin.routes");
+
 const sendExpiryNotifications = require("./routes/notify");
 cron.schedule("0 9 * * *", () => {
   // كل يوم الساعة 9 صباحًا
@@ -23,6 +25,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/sponsorship", sponsorshipRoutes);
 app.use("/api/reports", reportsRoutes);
 sendExpiryNotifications(); // جربيها يدويًا
+app.use("/api/admin/sponsorships", sponsorAdminRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
