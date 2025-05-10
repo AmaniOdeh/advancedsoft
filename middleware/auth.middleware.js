@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+// 🛡️ تحقق من التوكن
 const authenticateJWT = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
@@ -36,6 +37,7 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
+// 🧩 التحقق من الدور
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -45,4 +47,11 @@ const authorizeRoles = (...roles) => {
   };
 };
 
-module.exports = { authenticateJWT, authorizeRoles };
+// ✅ اختصار لمشرف دار الأيتام فقط
+const verifyOrphanage = [authenticateJWT, authorizeRoles("orphanage")];
+
+module.exports = {
+  authenticateJWT,
+  authorizeRoles,
+  verifyOrphanage,
+};
