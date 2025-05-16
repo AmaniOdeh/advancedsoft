@@ -22,10 +22,11 @@ const signin = async (req, res) => {
 
     // ✅ تحقق خاص برول orphanage
     if (user.role === "orphanage") {
-      db.query("SELECT is_verified FROM orphanages WHERE user_id = ?", [user.id], (err2, orphanageResults) => {
+      db.query("SELECT id, is_verified FROM orphanages WHERE user_id = ?", [user.id], (err2, orphanageResults) => {
         if (err2) return res.status(500).json({ error: err2 });
 
         const is_verified = orphanageResults.length > 0 ? orphanageResults[0].is_verified : false;
+        const orphanage_id = orphanageResults.length > 0 ? orphanageResults[0].id : null;
 
         if (!is_verified) {
           return res.status(403).json({
@@ -37,7 +38,7 @@ const signin = async (req, res) => {
           {
             id: user.id,
             role: user.role,
-           
+            orphanage_id
           },
           process.env.JWT_SECRET,
           { expiresIn: "1d" }
@@ -51,7 +52,7 @@ const signin = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            
+            orphanage_id
           }
         });
       });

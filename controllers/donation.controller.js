@@ -201,3 +201,41 @@ exports.getMyDonationStats = (req, res) => {
     });
   });
 };
+// ✅ دار الأيتام تعرض كل التبرعات إلها
+exports.getOrphanageDonations = (req, res) => {
+  const orphanage_id = req.user.orphanage_id;
+
+  const sql = `
+    SELECT d.*, u.name AS donor_name
+    FROM donations d
+    JOIN donors dn ON d.donor_id = dn.id
+    JOIN users u ON dn.user_id = u.id
+    WHERE d.orphanage_id = ?
+    ORDER BY d.created_at DESC
+  `;
+
+  db.query(sql, [orphanage_id], (err, rows) => {
+    if (err) return res.status(500).json({ error: err });
+    res.status(200).json({ donations: rows });
+  });
+};
+
+// ✅ دار الأيتام تحدث الستاتس لتبرع
+exports.updateDonationStatus = (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!["pending", "used", "forwarded","approved"].includes(status)) {
+    return res.status(400).json({ message: "Invalid status value." });
+  }
+
+  const sql = `UPDATE donations SET status = ? WHERE id = ?`;
+
+  db.query(sql, [status, id], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Donation not found." });
+    }
+    res.status(200).json({ message: "Donation status updated ✅" });
+  });
+};

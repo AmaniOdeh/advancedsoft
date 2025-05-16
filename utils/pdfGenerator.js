@@ -2,15 +2,6 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
 
-/**
- * Generates a professional PDF report for an orphan.
- * @param {Object} data - Data for the report.
- * @param {number} data.orphan_id - ID of the orphan.
- * @param {string} data.report_type - Type of the report (e.g., education, health).
- * @param {string} data.description - Detailed description of the report.
- * @param {string|null} data.photoUrl - Optional photo URL.
- * @returns {Promise<string>} - Resolves with the PDF file path.
- */
 exports.generateReportPDF = ({ orphan_id, report_type, description, photoUrl }) => {
   return new Promise((resolve, reject) => {
     try {
@@ -19,42 +10,59 @@ exports.generateReportPDF = ({ orphan_id, report_type, description, photoUrl }) 
       const filePath = path.join("public", "reports", fileName);
       const doc = new PDFDocument({ margin: 50 });
 
-      // Create PDF write stream
       const stream = fs.createWriteStream(filePath);
       doc.pipe(stream);
 
       // Header
       doc
-        .fontSize(22)
-        .text("HopeConnect - Orphan Report", { align: "center" })
-        .moveDown(1);
+        .fillColor("#0E3D59")
+        .fontSize(24)
+        .font("Helvetica-Bold")
+        .text("HopeConnect", { align: "center" })
+        .fontSize(18)
+        .text("Orphan Report", { align: "center" })
+        .moveDown(1.5);
 
-      // Basic Info
+      // Report Info Section
       doc
+        .fillColor("black")
+        .font("Helvetica-Bold")
         .fontSize(14)
-        .text(`Report Type: ${report_type}`, { continued: true })
-        .text(`     Orphan ID: ${orphan_id}`)
+        .text("Report Type:", { continued: true })
+        .font("Helvetica")
+        .text(` ${report_type}`)
+        .font("Helvetica-Bold")
+        .text("Orphan ID:", { continued: true })
+        .font("Helvetica")
+        .text(` ${orphan_id}`)
         .moveDown(1);
 
-      // Optional Image
+      // Optional Photo
       if (photoUrl) {
         const fullPath = path.join("public", photoUrl);
         if (fs.existsSync(fullPath)) {
-          doc.image(fullPath, {
-            fit: [200, 200],
-            align: "center",
-            valign: "center",
-          }).moveDown(1);
+          doc
+            .image(fullPath, {
+              fit: [300, 300],
+              align: "center",
+              valign: "center",
+            })
+            .moveDown(1);
         }
       }
 
-      // Description
+      // Description Section
       doc
-        .fontSize(12)
+        .font("Helvetica-Bold")
+        .fontSize(13)
         .text("Report Description:", { underline: true })
         .moveDown(0.5)
-        .font("Times-Roman")
-        .text(description, { align: "justify" });
+        .font("Helvetica")
+        .fontSize(12)
+        .text(description || "No description provided.", {
+          align: "justify",
+          lineGap: 4,
+        });
 
       // Footer
       doc
@@ -65,7 +73,6 @@ exports.generateReportPDF = ({ orphan_id, report_type, description, photoUrl }) 
           align: "right",
         });
 
-      // Finalize
       doc.end();
 
       stream.on("finish", () => resolve(`/reports/${fileName}`));

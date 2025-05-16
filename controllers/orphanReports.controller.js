@@ -25,14 +25,15 @@ exports.createReport = async (req, res) => {
 
       // 📨 إرسال التقرير عبر الإيميل لكل متبرع فقط للتبرعات approved
       const donorEmailSql = `
-        SELECT DISTINCT u.email, u.name AS donor_name, o.id AS orphan_id, ou.name AS orphan_name
-        FROM donations dn
-        JOIN donors d ON dn.donor_id = d.id
-        JOIN users u ON d.user_id = u.id
-        JOIN orphans o ON dn.orphan_id = o.id
-        JOIN users ou ON o.user_id = ou.id
-        WHERE dn.orphan_id = ? AND dn.status = 'approved'
-      `;
+      SELECT DISTINCT u.email, u.name AS donor_name, o.id AS orphan_id, ou.name AS orphan_name
+      FROM donations dn
+      JOIN donors d ON dn.donor_id = d.id
+      JOIN users u ON d.user_id = u.id
+      JOIN orphans o ON dn.orphan_id = o.id
+      JOIN users ou ON o.user_id = ou.id
+      WHERE dn.orphan_id = ?
+    `;
+    
 
       db.query(donorEmailSql, [orphan_id], async (err3, donors) => {
         if (err3) {
@@ -87,7 +88,7 @@ exports.createReport = async (req, res) => {
   }
 };
 
-// ✏️ تعديل تقرير
+//  تعديل تقرير
 exports.updateReport = (req, res) => {
   const { id } = req.params;
   const { report_type, description } = req.body;
@@ -99,13 +100,28 @@ exports.updateReport = (req, res) => {
   });
 };
 
-// 🗑️ حذف تقرير
 exports.deleteReport = (req, res) => {
   const { id } = req.params;
-  const sql = `DELETE FROM orphan_reports WHERE id = ?`;
+  const orphanage_id = req.user.orphanage_id;
 
-  db.query(sql, [id], (err, result) => {
+  // تحقق من ملكية التقرير
+  const checkSql = `
+    SELECT r.id
+    FROM orphan_reports r
+    JOIN orphans o ON r.orphan_id = o.id
+    WHERE r.id = ? AND o.orphanage_id = ?
+  `;
+
+  db.query(checkSql, [id, orphanage_id], (err, rows) => {
     if (err) return res.status(500).json({ error: err });
-    res.status(200).json({ message: "Report deleted 🗑️" });
+    if (rows.length === 0)
+      return res.status(403).json({ message: "Access denied ❌" });
+
+    // حذف التقرير
+    const deleteSql = `DELETE FROM orphan_reports WHERE id = ?`;
+    db.query(deleteSql, [id], (err2) => {
+      if (err2) return res.status(500).json({ error: err2 });
+      res.status(200).json({ message: "Report deleted 🗑️" });
+    });
   });
 };
