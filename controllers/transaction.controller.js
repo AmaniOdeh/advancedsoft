@@ -1,8 +1,6 @@
 const db = require('../db');
-
 exports.processTransaction = (req, res) => {
   const { donationId } = req.params;
-
   db.query(`SELECT amount FROM donations WHERE id = ?`, [donationId], (err, donationRows) => {
     if (err) return res.status(500).json({ error: err });
     if (donationRows.length === 0) return res.status(404).json({ message: 'Donation not found' });
@@ -23,7 +21,6 @@ exports.processTransaction = (req, res) => {
     });
   });
 };
-
 exports.getAllTransactions = (req, res) => {
   db.query(`SELECT * FROM transactions`, (err, rows) => {
     if (err) return res.status(500).json({ error: err });
