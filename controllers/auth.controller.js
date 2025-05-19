@@ -48,12 +48,11 @@ const signup = async (req, res) => {
               return res.status(400).json({ message: "Orphanage address and contact phone are required." });
             }
 
-            const image = image_url || "https://via.placeholder.com/150"; // رابط افتراضي
+            const image = image_url || "https://via.placeholder.com/150";
 
             db.query(
               "INSERT INTO orphanages (name, address, contact_phone, image_url, is_verified, email, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
               [name, address, contact_phone, image, false, email, userId],
-            
               (err2) => {
                 if (err2) return res.status(500).json({ message: "Failed to register orphanage.", error: err2 });
                 return res.status(201).json({ message: "Orphanage registered successfully ✅", userId });

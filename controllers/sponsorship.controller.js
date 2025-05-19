@@ -1,4 +1,6 @@
 const db = require("../db");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // ✅ Create new sponsorship
 exports.createSponsorship = (req, res) => {
@@ -47,6 +49,40 @@ exports.createSponsorship = (req, res) => {
       ],
       (err2, result) => {
         if (err2) return res.status(500).json({ error: err2 });
+
+        // ✅ Get sponsor email
+        const getSponsorEmailSql = `
+          SELECT u.email, u.name
+          FROM users u
+          JOIN sponsors s ON u.id = s.user_id
+          WHERE s.id = ?
+        `;
+
+        db.query(getSponsorEmailSql, [sponsorId], (err3, emailResult) => {
+          if (!err3 && emailResult.length > 0) {
+            const { email, name } = emailResult[0];
+
+            const msg = {
+              to: email,
+              from: {
+                name: "HopeConnect 💚",
+                email: process.env.EMAIL_USER,
+              },
+              subject: "🎉 Sponsorship Confirmation",
+              html: `
+                <h3>Dear ${name},</h3>
+                <p>Thank you for sponsoring a child through HopeConnect!</p>
+                <p>We are honored to have your support 💚</p>
+                <p>— HopeConnect Team</p>
+              `,
+            };
+
+            sgMail.send(msg)
+              .then(() => console.log(`✅ Sponsorship email sent to ${email}`))
+              .catch((err) => console.error(`❌ Email send failed to ${email}:`, err));
+          }
+        });
+
         res.status(201).json({
           message: "Sponsorship created successfully ✅",
           sponsorshipId: result.insertId,
@@ -70,7 +106,7 @@ exports.getMySponsorships = (req, res) => {
     JOIN sponsors sp ON sp.id = s.sponsor_id
     JOIN orphans o ON o.id = s.orphan_id
     JOIN users ou ON o.user_id = ou.id
-    LEFT JOIN orphanages og ON s.orphanage_id = og.id
+    LEFT JOIN orphanages og ON og.id = COALESCE(s.orphanage_id, o.orphanage_id)
     WHERE sp.user_id = ?`;
 
   db.query(sql, [userId], (err, results) => {
