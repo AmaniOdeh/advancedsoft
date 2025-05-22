@@ -4,7 +4,7 @@ A RESTful API backend platform built with **Node.js**, **Express**, and **MySQL*
 
 ---
 
-## 📌 Table of Contents
+##  Table of Contents
 1. [Project Description](#project-description)
 2. [Features](#features)
 3. [Tech Stack](#tech-stack)
@@ -16,7 +16,7 @@ A RESTful API backend platform built with **Node.js**, **Express**, and **MySQL*
 
 ---
 
-## 📖 Project Description
+##  Project Description
 
 HopeConnect is an initiative focused on delivering humanitarian aid and long-term support for orphans in Gaza. This backend provides:
 
@@ -29,7 +29,7 @@ HopeConnect is an initiative focused on delivering humanitarian aid and long-ter
 
 ---
 
-## ✅ Features
+##  Features
 
 - Orphan profile management & sponsorship linking
 - General and emergency donation handling
@@ -41,7 +41,7 @@ HopeConnect is an initiative focused on delivering humanitarian aid and long-ter
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 | Layer         | Technology                  |
 |--------------|------------------------------|
@@ -56,7 +56,7 @@ HopeConnect is an initiative focused on delivering humanitarian aid and long-ter
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 HopeConnect/
 ├── controllers/ # API logic
@@ -76,7 +76,7 @@ Edit
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 ```bash
 # Install dependencies
@@ -88,7 +88,7 @@ cp .env.example .env
 
 # Run the server
 node app.js
-📮 API Endpoints
+ API Endpoints
 Feature	Method	Endpoint
 Auth (login/signup)	POST	/api/login /api/signup
 Orphans	GET	/api/orphans
@@ -100,9 +100,9 @@ Delivery Tracking	POST	/api/deliveries
 Partner NGOs	POST	/api/partners
 Volunteer Requests	POST	/api/volunteer-requests
 
-🔒 Some routes are role-protected via JWT middleware.
+ Some routes are role-protected via JWT middleware.
 
-🧩 Database Schema
+ Database Schema
 25+ normalized tables
 
 All use InnoDB + Foreign Keys
